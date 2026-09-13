@@ -1,0 +1,51 @@
+.weekly-consistency__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+}
+
+.weekly-consistency__label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+}
+
+.weekly-consistency__count {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.weekly-consistency__days {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-1);
+}
+
+.weekly-consistency__day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.weekly-consistency__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-border-strong);
+}
+
+.weekly-consistency__dot--on {
+  background: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-soft);
+}
+
+.weekly-consistency__letter {
+  font-size: var(--text-xs);
+  color: var(--color-text-soft);
+  font-weight: var(--weight-medium);
+}

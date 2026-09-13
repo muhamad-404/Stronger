@@ -1,0 +1,228 @@
+/* Stronger — global design foundation */
+
+:root {
+  /* Surfaces */
+  --color-canvas: #f3eee8;
+  --color-canvas-deep: #e8dfd6;
+  --color-surface: #faf7f3;
+  --color-surface-elevated: #ffffff;
+  --color-border: rgba(90, 70, 62, 0.12);
+  --color-border-strong: rgba(90, 70, 62, 0.2);
+
+  /* Text */
+  --color-text: #3a2f2c;
+  --color-text-muted: #7a6a64;
+  --color-text-soft: #9a8a84;
+  --color-text-inverse: #faf7f3;
+
+  /* Brand */
+  --color-accent: #c4787a;
+  --color-accent-soft: #f0d9da;
+  --color-accent-deep: #a85d60;
+  --color-sage: #7d9a8a;
+  --color-sage-soft: #d8e6df;
+  --color-warm: #d4a574;
+
+  /* Feedback */
+  --color-success: #5f8f72;
+  --color-warning: #c4924a;
+  --color-danger: #b55a5a;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(58, 47, 44, 0.05);
+  --shadow-md: 0 8px 24px rgba(58, 47, 44, 0.08);
+
+  /* Radii */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+
+  /* Type */
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.35rem;
+  --text-2xl: 1.65rem;
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* Layout */
+  --app-max-width: 480px;
+  --nav-height: 64px;
+  --header-pad-top: 12px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 160ms;
+  --duration-normal: 280ms;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-normal);
+  color: var(--color-text);
+  background:
+    radial-gradient(
+      ellipse 120% 80% at 50% -10%,
+      rgba(196, 120, 122, 0.14),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 90% 60% at 100% 100%,
+      rgba(125, 154, 138, 0.12),
+      transparent 50%
+    ),
+    linear-gradient(180deg, var(--color-canvas) 0%, var(--color-canvas-deep) 100%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100dvh;
+  display: flex;
+  justify-content: center;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.app-shell {
+  width: 100%;
+  max-width: var(--app-max-width);
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: transparent;
+}
+
+.app-main {
+  flex: 1;
+  width: 100%;
+  padding: calc(var(--safe-top) + var(--header-pad-top)) var(--space-5)
+    calc(var(--nav-height) + var(--safe-bottom) + var(--space-5));
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  animation: page-enter var(--duration-normal) var(--ease-out);
+}
+
+.page-placeholder {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 520px) {
+  :root {
+    --app-max-width: 520px;
+  }
+
+  .app-shell {
+    box-shadow: var(--shadow-md);
+    background: linear-gradient(
+      180deg,
+      rgba(250, 247, 243, 0.72) 0%,
+      rgba(243, 238, 232, 0.55) 100%
+    );
+    border-left: 1px solid var(--color-border);
+    border-right: 1px solid var(--color-border);
+  }
+}

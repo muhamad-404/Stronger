@@ -1,0 +1,57 @@
+.guide-expandable {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-elevated);
+  overflow: hidden;
+}
+
+.guide-expandable__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 52px;
+  padding: var(--space-3) var(--space-4);
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.guide-expandable__trigger:active {
+  background: color-mix(in srgb, var(--color-accent-soft) 35%, transparent);
+}
+
+.guide-expandable__title {
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  line-height: var(--leading-tight);
+}
+
+.guide-expandable__chevron {
+  flex-shrink: 0;
+  color: var(--color-text-soft);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.guide-expandable--open .guide-expandable__chevron {
+  transform: rotate(180deg);
+}
+
+.guide-expandable__panel {
+  padding: 0 var(--space-4) var(--space-4);
+  animation: guide-expand-in var(--duration-fast) var(--ease-out);
+}
+
+@keyframes guide-expand-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

@@ -1,0 +1,82 @@
+.note-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.note-sheet__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(58, 47, 44, 0.35);
+  border: none;
+  padding: 0;
+}
+
+.note-sheet__panel {
+  position: relative;
+  width: 100%;
+  max-width: var(--app-max-width);
+  padding: var(--space-5) var(--space-5) calc(var(--space-5) + var(--safe-bottom));
+  background: var(--color-surface-elevated);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  box-shadow: var(--shadow-md);
+  animation: note-sheet-up var(--duration-normal) var(--ease-out);
+}
+
+.note-sheet__title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  color: var(--color-text);
+}
+
+.note-sheet__hint {
+  margin-top: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.note-sheet__input {
+  width: 100%;
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border: 1.5px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-size: var(--text-md);
+  line-height: var(--leading-normal);
+  resize: vertical;
+  min-height: 110px;
+}
+
+.note-sheet__input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-soft);
+}
+
+.note-sheet__error {
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-danger);
+}
+
+.note-sheet__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+@keyframes note-sheet-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

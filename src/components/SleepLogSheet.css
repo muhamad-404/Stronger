@@ -1,0 +1,22 @@
+.sleep-log__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.sleep-log__estimate {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.sleep-log__estimate strong {
+  color: var(--color-text);
+  font-weight: var(--weight-semibold);
+}
+
+.sleep-log__quality-hint {
+  margin: calc(var(--space-2) * -1) 0 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-soft);
+}

@@ -1,0 +1,50 @@
+.guide-page__back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  align-self: flex-start;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-accent-deep);
+}
+
+.guide-page__section-title {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.guide-page__categories,
+.guide-page__results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.guide-page__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.guide-page__empty {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: var(--leading-normal);
+}
+
+.guide-page__solver-cta {
+  display: block;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-sage-soft) 70%, white);
+  border: 1px solid color-mix(in srgb, var(--color-sage) 22%, transparent);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-accent-deep);
+  line-height: var(--leading-normal);
+}

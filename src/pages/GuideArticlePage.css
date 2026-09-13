@@ -1,0 +1,47 @@
+.guide-article-page__crumb {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-soft);
+}
+
+.guide-article-page__crumb a {
+  color: var(--color-accent-deep);
+  font-weight: var(--weight-medium);
+}
+
+.guide-article-page__sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.guide-article-page__h2 {
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.guide-article-page__checklist {
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+}
+
+.guide-article-page__related-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.guide-article-page__related-list a {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-accent-deep);
+}

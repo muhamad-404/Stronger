@@ -1,0 +1,45 @@
+.exercise-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  min-height: 72px;
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.exercise-card:active {
+  background: color-mix(in srgb, var(--color-accent-soft) 40%, white);
+}
+
+.exercise-card__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.exercise-card__title {
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+}
+
+.exercise-card__target {
+  margin-top: 2px;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.exercise-card__rest {
+  margin-top: 2px;
+  font-size: var(--text-xs);
+  color: var(--color-text-soft);
+}
+
+.exercise-card__chevron {
+  color: var(--color-text-soft);
+  flex-shrink: 0;
+}

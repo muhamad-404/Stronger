@@ -1,0 +1,74 @@
+.workout-session__safety ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: var(--leading-normal);
+}
+
+.workout-session__safety li + li {
+  margin-top: var(--space-2);
+}
+
+.workout-session__progress-card {
+  position: relative;
+}
+
+.workout-session__progress-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+}
+
+.workout-session__progress-card .progress__meta {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.workout-session__safety-inline {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-sage-soft);
+}
+
+.workout-session__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.workout-session__suggest {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+}
+
+.workout-session__suggest input {
+  margin-top: 3px;
+  accent-color: var(--color-accent);
+}
+
+.workout-session__done-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.workout-session__done-actions a {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-accent-deep);
+}

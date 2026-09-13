@@ -1,0 +1,104 @@
+.eat-page__appetite-cta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-soft),
+    color-mix(in srgb, var(--color-sage-soft) 70%, white)
+  );
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.eat-page__appetite-cta strong {
+  display: block;
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+}
+
+.eat-page__appetite-cta span span {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  font-weight: var(--weight-regular);
+}
+
+.eat-page__appetite-cta svg {
+  color: var(--color-accent-deep);
+  flex-shrink: 0;
+}
+
+.eat-page__section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.eat-page__section-head h2,
+.eat-page__sections-title {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.eat-page__see-all {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-accent-deep);
+}
+
+.eat-page__slot-wrap + .eat-page__slot-wrap {
+  border-top: 1px solid var(--color-border);
+}
+
+.eat-page__today-count {
+  margin: var(--space-4) 0 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.eat-page__summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+  text-align: center;
+}
+
+.eat-page__summary-value {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.eat-page__summary-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.eat-page__log-cta {
+  display: inline-flex;
+  margin-top: var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-accent-deep);
+}
+
+.eat-page__links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.eat-page__sections-title {
+  margin-bottom: var(--space-3);
+}

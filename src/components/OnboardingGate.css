@@ -1,0 +1,7 @@
+.onboarding-gate__loading {
+  margin: auto;
+  padding: var(--space-5);
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}

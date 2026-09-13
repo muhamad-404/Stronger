@@ -1,0 +1,103 @@
+.onboarding-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-height: 100%;
+  animation: page-enter var(--duration-normal) var(--ease-out);
+}
+
+.onboarding-page__brand-name {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.onboarding-page__loading {
+  margin: auto;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.onboarding-page__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  animation: page-enter var(--duration-normal) var(--ease-out);
+}
+
+.onboarding-page__title {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.onboarding-page__subtitle {
+  font-size: var(--text-md);
+  color: var(--color-text-muted);
+  max-width: 34ch;
+}
+
+.onboarding-page__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  margin-top: auto;
+}
+
+.onboarding-page__actions .btn {
+  min-width: 7.5rem;
+}
+
+.onboarding-page__summary {
+  margin-top: var(--space-2);
+}
+
+.onboarding-summary {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.onboarding-summary__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-4);
+}
+
+.onboarding-summary__row dt {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.onboarding-summary__row dd {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.onboarding-page__encourage {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: var(--leading-normal);
+}
+
+.onboarding-page__submit-error {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-danger);
+}

@@ -1,0 +1,15 @@
+.meal-action-bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.meal-action-bar__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+
+.meal-action-bar .btn {
+  gap: var(--space-2);
+}

@@ -1,0 +1,61 @@
+.meal-card {
+  display: block;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.meal-card:active {
+  transform: scale(0.99);
+  background: color-mix(in srgb, var(--color-accent-soft) 35%, white);
+}
+
+.meal-card__category {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: var(--space-1);
+}
+
+.meal-card__title {
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  line-height: var(--leading-tight);
+}
+
+.meal-card__desc {
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: var(--leading-normal);
+}
+
+.meal-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.meal-card__tag {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  background: var(--color-sage-soft);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.meal-card__tag--soft {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-deep);
+}

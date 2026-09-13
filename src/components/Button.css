@@ -1,0 +1,76 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border-radius: var(--radius-pill);
+  font-weight: var(--weight-semibold);
+  line-height: 1;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    opacity var(--duration-fast) var(--ease-out);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn--full {
+  width: 100%;
+}
+
+.btn--sm {
+  min-height: 36px;
+  padding: 0 var(--space-4);
+  font-size: var(--text-sm);
+}
+
+.btn--md {
+  min-height: 44px;
+  padding: 0 var(--space-5);
+  font-size: var(--text-md);
+}
+
+.btn--lg {
+  min-height: 52px;
+  padding: 0 var(--space-6);
+  font-size: var(--text-lg);
+}
+
+.btn--primary {
+  background: var(--color-accent);
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: var(--color-accent-deep);
+}
+
+.btn--secondary {
+  background: var(--color-sage-soft);
+  color: var(--color-text);
+}
+
+.btn--secondary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-sage-soft) 80%, var(--color-sage));
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--color-accent-deep);
+}
+
+.btn--ghost:hover:not(:disabled) {
+  background: var(--color-accent-soft);
+}
