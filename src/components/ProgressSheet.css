@@ -62,6 +62,7 @@
 
 .progress-sheet__range {
   width: 100%;
+  min-height: var(--touch-min);
   accent-color: var(--color-accent);
 }
 

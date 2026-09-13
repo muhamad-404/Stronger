@@ -1,15 +1,15 @@
 .food-log-item {
   display: flex;
   align-items: flex-start;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
   min-height: 56px;
 }
 
 .food-log-item__check {
-  width: 22px;
-  height: 22px;
-  margin-top: 2px;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  margin: 0;
   border-radius: 50%;
   border: 1.5px solid var(--color-border-strong);
   display: flex;
@@ -17,6 +17,8 @@
   justify-content: center;
   flex-shrink: 0;
   color: var(--color-text-inverse);
+  background: transparent;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .food-log-item__check--on {
@@ -27,12 +29,14 @@
 .food-log-item__body {
   flex: 1;
   min-width: 0;
+  padding-top: var(--space-2);
 }
 
 .food-log-item__title {
   font-size: var(--text-md);
   font-weight: var(--weight-medium);
   color: var(--color-text);
+  line-height: var(--leading-tight);
 }
 
 .food-log-item--eaten .food-log-item__title {
@@ -57,18 +61,20 @@
 
 .food-log-item__actions {
   display: flex;
-  gap: 2px;
+  gap: 0;
   flex-shrink: 0;
+  margin-top: 2px;
 }
 
 .food-log-item__icon-btn {
-  width: 32px;
-  height: 32px;
+  width: var(--touch-min);
+  height: var(--touch-min);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--color-text-soft);
   border-radius: var(--radius-sm);
+  -webkit-tap-highlight-color: transparent;
 }
 
 .food-log-item__icon-btn:active {

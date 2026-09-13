@@ -32,7 +32,8 @@
   margin-top: var(--space-1);
   font-size: var(--text-sm);
   color: var(--color-text-muted);
-  max-width: 34ch;
+  max-width: 36ch;
+  line-height: var(--leading-normal);
 }
 
 .page-header__action {

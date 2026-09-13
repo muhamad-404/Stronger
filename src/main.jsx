@@ -4,6 +4,7 @@ import { HashRouter } from 'react-router-dom';
 import App from './App.jsx';
 import { OnboardingStatusProvider } from './hooks/useOnboardingStatus.jsx';
 import './styles/global.css';
+import './styles/mobile.css';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

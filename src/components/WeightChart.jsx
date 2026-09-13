@@ -47,7 +47,7 @@ export default function WeightChart({ data = [] }) {
         <ResponsiveContainer width="100%" height={200}>
           <LineChart
             data={data}
-            margin={{ top: 8, right: 8, left: -18, bottom: 0 }}
+            margin={{ top: 8, right: 4, left: 0, bottom: 0 }}
           >
             <CartesianGrid stroke="rgba(90,70,62,0.08)" vertical={false} />
             <XAxis
@@ -56,14 +56,14 @@ export default function WeightChart({ data = [] }) {
               tickLine={false}
               axisLine={false}
               interval="preserveStartEnd"
-              minTickGap={28}
+              minTickGap={36}
             />
             <YAxis
               domain={[min - pad, max + pad]}
               tick={{ fill: '#9a8a84', fontSize: 11 }}
               tickLine={false}
               axisLine={false}
-              width={40}
+              width={36}
               tickFormatter={(v) => Number(v).toFixed(1)}
             />
             <Tooltip content={<CustomTooltip />} />

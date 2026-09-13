@@ -59,8 +59,9 @@
 }
 
 .add-food-sheet__pick {
-  font-size: var(--text-xs);
-  padding: 6px 10px;
+  min-height: 36px;
+  font-size: var(--text-sm);
+  padding: 8px 12px;
   border-radius: var(--radius-pill);
   background: var(--color-sage-soft);
   color: var(--color-text);
@@ -73,7 +74,7 @@
 }
 
 .add-food-sheet__portion {
-  min-height: 40px;
+  min-height: var(--touch-min);
   border-radius: var(--radius-pill);
   border: 1px solid var(--color-border-strong);
   background: var(--color-surface);
@@ -93,13 +94,15 @@
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  min-height: var(--touch-min);
   font-size: var(--text-sm);
   color: var(--color-text);
 }
 
 .add-food-sheet__check input {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
   accent-color: var(--color-accent);
 }
 

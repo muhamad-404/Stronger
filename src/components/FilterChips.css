@@ -24,7 +24,7 @@
 
 .filter-chips__chip {
   flex-shrink: 0;
-  min-height: 36px;
+  min-height: var(--touch-min);
   padding: 0 var(--space-4);
   border-radius: var(--radius-pill);
   border: 1px solid var(--color-border-strong);

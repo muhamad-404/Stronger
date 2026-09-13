@@ -10,6 +10,7 @@
 .weight-chart__canvas {
   width: 100%;
   min-height: 200px;
+  overflow: hidden;
 }
 
 .weight-chart__empty,

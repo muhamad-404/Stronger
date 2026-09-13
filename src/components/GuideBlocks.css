@@ -6,8 +6,8 @@
 
 .guide-blocks__p {
   margin: 0;
-  font-size: var(--text-sm);
-  line-height: var(--leading-normal);
+  font-size: var(--text-md);
+  line-height: 1.55;
   color: var(--color-text);
 }
 
@@ -26,8 +26,8 @@
 .guide-blocks__checklist li {
   position: relative;
   padding-left: 1.1rem;
-  font-size: var(--text-sm);
-  line-height: var(--leading-normal);
+  font-size: var(--text-md);
+  line-height: 1.55;
   color: var(--color-text);
 }
 

@@ -32,12 +32,13 @@
   align-items: center;
   justify-content: center;
   gap: 2px;
-  min-height: 48px;
+  min-height: var(--touch-min);
   padding: var(--space-1);
   border-radius: var(--radius-md);
   color: var(--color-text-soft);
-  font-size: 0.7rem;
+  font-size: 0.6875rem;
   font-weight: var(--weight-medium);
+  line-height: 1.15;
   transition:
     color var(--duration-fast) var(--ease-out),
     background-color var(--duration-fast) var(--ease-out);

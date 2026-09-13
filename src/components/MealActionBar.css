@@ -12,4 +12,9 @@
 
 .meal-action-bar .btn {
   gap: var(--space-2);
+  min-width: 0;
+}
+
+.meal-action-bar__row .btn {
+  width: 100%;
 }

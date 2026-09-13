@@ -62,8 +62,8 @@
 }
 
 .task-row__check {
-  width: 24px;
-  height: 24px;
+  width: var(--touch-min);
+  height: var(--touch-min);
   border-radius: 50%;
   border: 1.5px solid var(--color-border-strong);
   display: flex;

@@ -67,6 +67,7 @@
   --app-max-width: 480px;
   --nav-height: 64px;
   --header-pad-top: 12px;
+  --touch-min: 44px;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-top: env(safe-area-inset-top, 0px);
 
@@ -211,10 +212,6 @@ p {
 }
 
 @media (min-width: 520px) {
-  :root {
-    --app-max-width: 520px;
-  }
-
   .app-shell {
     box-shadow: var(--shadow-md);
     background: linear-gradient(
