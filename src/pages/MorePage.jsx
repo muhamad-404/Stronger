@@ -3,6 +3,7 @@ import {
   BookOpen,
   CalendarRange,
   ChevronRight,
+  CircleHelp,
   LifeBuoy,
   Moon,
   Settings,
@@ -20,6 +21,22 @@ export default function MorePage() {
         subtitle="Help, sleep, guide, and goals."
       />
       <Card padding="none">
+        <Link to="/user-guide" className="more-link">
+          <span className="more-link__icon" aria-hidden>
+            <CircleHelp size={20} strokeWidth={2} />
+          </span>
+          <span className="more-link__text">
+            <span className="more-link__title">How to use Stronger</span>
+            <span className="more-link__desc">
+              Walk through every screen — plain language
+            </span>
+          </span>
+          <ChevronRight
+            className="more-link__chevron"
+            size={18}
+            aria-hidden
+          />
+        </Link>
         <Link to="/solver" className="more-link">
           <span className="more-link__icon" aria-hidden>
             <LifeBuoy size={20} strokeWidth={2} />

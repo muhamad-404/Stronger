@@ -45,6 +45,10 @@ export default function GuidePage() {
         Need help right now? Open the Problem solver →
       </Link>
 
+      <Link to="/user-guide" className="guide-page__solver-cta">
+        New here? Learn how to use every screen →
+      </Link>
+
       <GuideCallout
         tone="info"
         title="Not medical advice"

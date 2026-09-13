@@ -4,6 +4,8 @@ Eat, Train, Recover, Grow.
 
 A calm, mobile-first Progressive Web App for healthy weight gain — food consistency, gentle strength, sleep, and progress. All personal data stays on the device (IndexedDB). Nothing is uploaded to a server.
 
+**End-user how-to:** see [USER_GUIDE.md](./USER_GUIDE.md), or in the app open **More → How to use Stronger**.
+
 ## Local development
 
 ```bash

@@ -22,6 +22,7 @@ import MorePage from './pages/MorePage.jsx';
 import GuidePage from './pages/GuidePage.jsx';
 import GuideCategoryPage from './pages/GuideCategoryPage.jsx';
 import GuideArticlePage from './pages/GuideArticlePage.jsx';
+import UserGuidePage from './pages/UserGuidePage.jsx';
 import ProblemSolverPage from './pages/ProblemSolverPage.jsx';
 import SleepPage from './pages/SleepPage.jsx';
 import WeeklyReviewPage from './pages/WeeklyReviewPage.jsx';
@@ -72,6 +73,7 @@ export default function App() {
           <Route path="guide" element={<GuidePage />} />
           <Route path="guide/category/:categoryId" element={<GuideCategoryPage />} />
           <Route path="guide/:articleId" element={<GuideArticlePage />} />
+          <Route path="user-guide" element={<UserGuidePage />} />
           <Route path="goals" element={<GoalsPage />} />
           <Route path="settings" element={<SettingsHubPage />} />
           <Route path="settings/profile" element={<SettingsProfilePage />} />

@@ -1,0 +1,176 @@
+.user-guide-page__back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  align-self: flex-start;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-accent-deep);
+}
+
+.user-guide__toc {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-sage-soft) 55%, white);
+  border: 1px solid color-mix(in srgb, var(--color-sage) 20%, transparent);
+}
+
+.user-guide__toc-title {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-eyebrow, 0.05em);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.user-guide__toc-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.user-guide__toc-list a {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-accent-deep);
+  line-height: var(--leading-normal);
+}
+
+.user-guide__sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.user-guide__section {
+  scroll-margin-top: calc(var(--space-4) + env(safe-area-inset-top, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.user-guide__heading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  line-height: var(--leading-tight);
+}
+
+.user-guide__summary {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: var(--leading-normal);
+}
+
+.user-guide__blocks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.user-guide__p {
+  margin: 0;
+  font-size: var(--text-md);
+  color: var(--color-text);
+  line-height: var(--leading-relaxed, 1.55);
+}
+
+.user-guide__list {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: var(--text-md);
+  color: var(--color-text);
+  line-height: var(--leading-normal);
+}
+
+.user-guide__steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  counter-reset: ug-step;
+}
+
+.user-guide__step {
+  position: relative;
+  padding: var(--space-3) var(--space-4) var(--space-3) calc(var(--space-4) + 1.75rem);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-surface) 88%, white);
+  border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
+  counter-increment: ug-step;
+}
+
+.user-guide__step::before {
+  content: counter(ug-step);
+  position: absolute;
+  left: var(--space-3);
+  top: var(--space-3);
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-soft);
+  color: var(--color-accent-deep);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+}
+
+.user-guide__step-title {
+  margin: 0 0 var(--space-1);
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+}
+
+.user-guide__step-body {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: var(--leading-normal);
+}
+
+.user-guide__jump {
+  display: inline-flex;
+  align-self: flex-start;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-accent-deep);
+  padding: var(--space-2) 0;
+  min-height: var(--touch-min, 44px);
+  align-items: center;
+}
+
+.user-guide__footer {
+  margin: 0;
+  padding-top: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: var(--leading-normal);
+}
+
+.user-guide__footer a {
+  font-weight: var(--weight-semibold);
+  color: var(--color-accent-deep);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .user-guide__section {
+    scroll-margin-top: calc(var(--space-5) + env(safe-area-inset-top, 0px));
+  }
+}
