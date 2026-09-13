@@ -1,5 +1,5 @@
 import { get, put, getAll, STORES } from './database/index.js';
-import { toDateKey } from '../utils/dates.js';
+import { isDateKey, toDateKey } from '../utils/dates.js';
 
 function emptyLog(dateKey) {
   return {
@@ -23,12 +23,16 @@ export async function getDailyLog(dateKey = toDateKey()) {
  * @param {object} log
  */
 export async function saveDailyLog(log) {
+  const dateKey = log.date || log.id;
+  if (!isDateKey(dateKey)) {
+    throw new Error('Daily log needs a valid date.');
+  }
   const record = {
     ...log,
-    id: log.date || log.id,
-    date: log.date || log.id,
+    id: dateKey,
+    date: dateKey,
     completedTaskIds: Array.isArray(log.completedTaskIds)
-      ? log.completedTaskIds
+      ? log.completedTaskIds.map(String)
       : [],
     note: log.note ?? '',
     updatedAt: new Date().toISOString(),

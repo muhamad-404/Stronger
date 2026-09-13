@@ -5,7 +5,7 @@ import {
   getWorkoutExercises,
 } from '../data/workouts.js';
 import { setTaskCompleted } from './dailyLog.js';
-import { createId, toDateKey } from '../utils/dates.js';
+import { createId, isDateKey, toDateKey } from '../utils/dates.js';
 
 function buildExerciseState(exercise) {
   const target = exercise.repsOrDuration;
@@ -76,6 +76,9 @@ export async function getSession(id) {
  * @param {string} [dateKey]
  */
 export async function startSession(workoutId, dateKey = toDateKey()) {
+  if (!isDateKey(dateKey)) {
+    throw new Error('Workout needs a valid date.');
+  }
   const existing = await getActiveSession(dateKey);
   if (existing) {
     if (existing.workoutId === String(workoutId).toUpperCase()) {
@@ -106,6 +109,13 @@ export async function startSession(workoutId, dateKey = toDateKey()) {
  * @param {object} session
  */
 export async function saveSessionProgress(session) {
+  if (!session?.id) throw new Error('Workout session is missing an id.');
+  if (!isDateKey(session.date)) {
+    throw new Error('Workout session needs a valid date.');
+  }
+  if (!Array.isArray(session.exercises)) {
+    throw new Error('Workout session is missing exercises.');
+  }
   const next = {
     ...session,
     updatedAt: new Date().toISOString(),

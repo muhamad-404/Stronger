@@ -1,5 +1,6 @@
 import { get, put, STORES } from './database/index.js';
 import {
+  isDateKey,
   listDateKeys,
   parseTimeToMinutes,
   toDateKey,
@@ -65,6 +66,9 @@ export async function getSleepRecord(dateKey = toDateKey()) {
  */
 export async function saveSleepRecord(partial) {
   const dateKey = partial.date || toDateKey();
+  if (!isDateKey(dateKey)) {
+    throw new Error('Sleep log needs a valid date.');
+  }
   const existing = (await get(STORES.sleepRecords, dateKey)) || {};
   const now = new Date().toISOString();
 

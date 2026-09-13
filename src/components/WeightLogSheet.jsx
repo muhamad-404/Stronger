@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Button from './Button.jsx';
 import Field from './Field.jsx';
 import { toDateKey } from '../utils/dates.js';
+import { formatStorageError } from '../utils/storageErrors.js';
 import './ProgressSheet.css';
 
 export default function WeightLogSheet({ open, onClose, onSave }) {
@@ -28,7 +29,7 @@ export default function WeightLogSheet({ open, onClose, onSave }) {
       await onSave({ date, weightKg: weight, note });
       onClose();
     } catch (err) {
-      setError(err?.message || 'Could not save weight.');
+      setError(formatStorageError(err, 'Could not save weight.'));
     } finally {
       setSaving(false);
     }

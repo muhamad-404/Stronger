@@ -1,14 +1,20 @@
 import {
+  APP_SCHEMA_VERSION,
   DB_NAME,
   DB_VERSION,
   STORES,
-  clear,
   get,
   getAll,
   put,
+  replaceStoresAtomically,
 } from './database/index.js';
 import { downloadJson, formatBytes } from '../utils/files.js';
 import { toDateKey } from '../utils/dates.js';
+import { StorageError, formatStorageError } from '../utils/storageErrors.js';
+import {
+  assertSanitizationAcceptable,
+  sanitizeBackupData,
+} from './backupSanitize.js';
 
 /** Backup envelope schema — bump when shape changes incompatibly. */
 export const BACKUP_SCHEMA_VERSION = 1;
@@ -64,6 +70,7 @@ export async function buildBackupEnvelope() {
     app: 'Stronger',
     version: BACKUP_SCHEMA_VERSION,
     dbVersion: DB_VERSION,
+    appSchemaVersion: APP_SCHEMA_VERSION,
     exportedAt: new Date().toISOString(),
     data,
   };
@@ -102,42 +109,62 @@ function countRecords(data) {
  */
 export function validateBackup(payload) {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
-    throw new Error('Backup must be a JSON object.');
+    throw new StorageError('Backup must be a JSON object.', {
+      code: 'BACKUP_SHAPE',
+    });
   }
   if (payload.app !== 'Stronger') {
-    throw new Error('This file is not a Stronger backup.');
+    throw new StorageError('This file is not a Stronger backup.', {
+      code: 'BACKUP_APP',
+    });
   }
   const version = Number(payload.version);
   if (!Number.isFinite(version) || version < 1) {
-    throw new Error('Backup is missing a valid schema version.');
+    throw new StorageError('Backup is missing a valid schema version.', {
+      code: 'BACKUP_VERSION',
+    });
   }
   if (version > BACKUP_SCHEMA_VERSION) {
-    throw new Error(
+    throw new StorageError(
       `This backup uses schema v${version}. Update Stronger to import it.`,
+      { code: 'BACKUP_VERSION_AHEAD' },
     );
   }
   if (!payload.exportedAt || typeof payload.exportedAt !== 'string') {
-    throw new Error('Backup is missing exportedAt.');
+    throw new StorageError('Backup is missing exportedAt.', {
+      code: 'BACKUP_EXPORTED_AT',
+    });
   }
-  if (!payload.data || typeof payload.data !== 'object' || Array.isArray(payload.data)) {
-    throw new Error('Backup is missing a data object.');
+  if (
+    !payload.data ||
+    typeof payload.data !== 'object' ||
+    Array.isArray(payload.data)
+  ) {
+    throw new StorageError('Backup is missing a data object.', {
+      code: 'BACKUP_DATA',
+    });
   }
 
-  // Required store keys present as arrays (may be empty)
   const required = ['settings', 'goals', 'weightHistory', 'dailyLogs'];
   for (const key of required) {
     if (!(key in payload.data)) {
-      throw new Error(`Backup is missing required data: ${key}.`);
+      throw new StorageError(`Backup is missing required data: ${key}.`, {
+        code: 'BACKUP_MISSING_STORE',
+      });
     }
     if (!Array.isArray(payload.data[key])) {
-      throw new Error(`Backup field "${key}" must be an array.`);
+      throw new StorageError(`Backup field "${key}" must be an array.`, {
+        code: 'BACKUP_STORE_TYPE',
+      });
     }
   }
 
   for (const key of Object.keys(payload.data)) {
     if (!BACKUP_STORE_KEYS.includes(key)) continue;
     if (!Array.isArray(payload.data[key])) {
-      throw new Error(`Backup field "${key}" must be an array.`);
+      throw new StorageError(`Backup field "${key}" must be an array.`, {
+        code: 'BACKUP_STORE_TYPE',
+      });
     }
   }
 
@@ -155,50 +182,99 @@ export function validateBackup(payload) {
 }
 
 /**
- * Replace all local data with a validated backup.
- * Caller must confirm with the user first.
+ * Prepare sanitized batches for import. Pure aside from throwing.
  * @param {object} payload
  */
-export async function importBackup(payload) {
+export function prepareImport(payload) {
   const summary = validateBackup(payload);
-  const data = payload.data;
-
-  // Clear known stores, then write
-  for (const key of BACKUP_STORE_KEYS) {
-    await clear(STORE_BY_KEY[key]);
-  }
-
-  for (const key of BACKUP_STORE_KEYS) {
-    const rows = Array.isArray(data[key]) ? data[key] : [];
-    const storeName = STORE_BY_KEY[key];
-    for (const row of rows) {
-      if (!row || typeof row !== 'object') continue;
-      if (row.id == null && row.key == null) continue;
-      await put(storeName, row);
-    }
-  }
+  const { data, report } = sanitizeBackupData(payload.data, BACKUP_STORE_KEYS);
+  assertSanitizationAcceptable(report, summary.recordCount);
 
   const now = new Date().toISOString();
-  await put(STORES.settings, {
+  const settingsRows = [...data.settings];
+  const metaIndex = settingsRows.findIndex((r) => r.id === BACKUP_META_ID);
+  const meta = {
     id: BACKUP_META_ID,
     lastBackupAt: payload.exportedAt || now,
     lastImportAt: now,
     lastBackupFilename: null,
-    lastBackupRecordCount: summary.recordCount,
+    lastBackupRecordCount: countRecords(data),
+    lastImportSkippedInvalid: report.skippedInvalid,
+    lastImportSkippedDuplicates: report.skippedDuplicates,
     updatedAt: now,
-  });
+  };
+  if (metaIndex >= 0) settingsRows[metaIndex] = { ...settingsRows[metaIndex], ...meta };
+  else settingsRows.push(meta);
+  data.settings = settingsRows;
 
-  return summary;
+  const batches = BACKUP_STORE_KEYS.map((key) => ({
+    storeName: STORE_BY_KEY[key],
+    rows: data[key] || [],
+  }));
+
+  return {
+    summary: {
+      ...summary,
+      recordCount: countRecords(data),
+      skippedInvalid: report.skippedInvalid,
+      skippedDuplicates: report.skippedDuplicates,
+      sanitizeReport: report,
+    },
+    batches,
+    data,
+  };
 }
 
 /**
- * Wipe every Stronger IndexedDB object store.
+ * Replace all local data with a validated backup.
+ * Snapshots current data first and restores it if the write fails.
+ * @param {object} payload
+ */
+export async function importBackup(payload) {
+  const prepared = prepareImport(payload);
+  const snapshot = await collectAllStoreData();
+  const snapshotBatches = BACKUP_STORE_KEYS.map((key) => ({
+    storeName: STORE_BY_KEY[key],
+    rows: Array.isArray(snapshot[key]) ? snapshot[key] : [],
+  }));
+
+  try {
+    await replaceStoresAtomically(prepared.batches);
+  } catch (error) {
+    try {
+      await replaceStoresAtomically(snapshotBatches);
+    } catch (restoreError) {
+      throw new StorageError(
+        `${formatStorageError(error, 'Import failed.')} Restore also failed — export from another device if you have a backup.`,
+        {
+          code: 'BACKUP_IMPORT_AND_RESTORE_FAILED',
+          cause: { importError: error, restoreError },
+        },
+      );
+    }
+    throw new StorageError(
+      formatStorageError(
+        error,
+        'Import failed. Your previous data was restored.',
+      ),
+      { code: 'BACKUP_IMPORT_ROLLED_BACK', cause: error },
+    );
+  }
+
+  return prepared.summary;
+}
+
+/**
+ * Wipe every Stronger IndexedDB object store in one transaction.
  * Caller must confirm — irreversible without a backup.
  */
 export async function clearAllData() {
-  for (const key of BACKUP_STORE_KEYS) {
-    await clear(STORE_BY_KEY[key]);
-  }
+  await replaceStoresAtomically(
+    BACKUP_STORE_KEYS.map((key) => ({
+      storeName: STORE_BY_KEY[key],
+      rows: [],
+    })),
+  );
 }
 
 /**
@@ -226,7 +302,7 @@ export async function getStorageInfo() {
 
   let quota = null;
   let usage = null;
-  if (navigator.storage?.estimate) {
+  if (typeof navigator !== 'undefined' && navigator.storage?.estimate) {
     try {
       const est = await navigator.storage.estimate();
       quota = est.quota ?? null;
@@ -239,6 +315,7 @@ export async function getStorageInfo() {
   return {
     dbName: DB_NAME,
     dbVersion: DB_VERSION,
+    appSchemaVersion: APP_SCHEMA_VERSION,
     counts,
     totalRecords,
     estimatedBytes,
@@ -249,3 +326,5 @@ export async function getStorageInfo() {
     quotaLabel: quota != null ? formatBytes(quota) : null,
   };
 }
+
+export { sanitizeBackupData, sanitizeStoreRow } from './backupSanitize.js';

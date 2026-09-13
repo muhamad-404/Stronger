@@ -1,7 +1,12 @@
 import { get, put, remove, getAll, getAllByIndex, STORES } from './database/index.js';
 import { getMealById, MEAL_SLOTS } from '../data/meals.js';
 import { setTaskCompleted } from './dailyLog.js';
-import { createId, currentTimeLabel, toDateKey } from '../utils/dates.js';
+import {
+  createId,
+  currentTimeLabel,
+  isDateKey,
+  toDateKey,
+} from '../utils/dates.js';
 
 export const PORTIONS = ['small', 'normal', 'large', 'custom'];
 
@@ -117,6 +122,9 @@ export async function addEntry(partial) {
   if (!entry.foodTitle) {
     throw new Error('Food title is required.');
   }
+  if (!isDateKey(entry.date)) {
+    throw new Error('Food log needs a valid date.');
+  }
   await put(STORES.foodLog, entry);
   await syncSlotTaskFromLog(entry.date, entry.slotId);
   return entry;
@@ -131,6 +139,7 @@ export async function updateEntry(id, patch) {
   if (!existing) throw new Error('Entry not found.');
   const next = normalizeEntry({ ...patch, id }, existing);
   if (!next.foodTitle) throw new Error('Food title is required.');
+  if (!isDateKey(next.date)) throw new Error('Food log needs a valid date.');
   await put(STORES.foodLog, next);
   await syncSlotTaskFromLog(next.date, next.slotId);
   if (existing.slotId !== next.slotId || existing.date !== next.date) {

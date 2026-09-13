@@ -15,6 +15,7 @@ import {
   validateBackup,
 } from '../services/backup.js';
 import { pickFile, readJsonFile } from '../utils/files.js';
+import { formatStorageError } from '../utils/storageErrors.js';
 import { useOnboardingStatus } from '../hooks/useOnboardingStatus.jsx';
 import './SettingsPage.css';
 
@@ -53,8 +54,8 @@ export default function SettingsDataPage() {
       const [m, s] = await Promise.all([getBackupMeta(), getStorageInfo()]);
       setMeta(m);
       setStorage(s);
-    } catch {
-      setError('Could not read storage details.');
+    } catch (err) {
+      setError(formatStorageError(err, 'Could not read storage details.'));
     }
   }, []);
 
@@ -70,8 +71,8 @@ export default function SettingsDataPage() {
       const { filename } = await exportBackup();
       setStatus(`Backup downloaded as ${filename}. Keep it somewhere safe.`);
       await refresh();
-    } catch {
-      setError('Could not export backup.');
+    } catch (err) {
+      setError(formatStorageError(err, 'Could not export backup.'));
     } finally {
       setBusy(false);
     }
@@ -89,7 +90,7 @@ export default function SettingsDataPage() {
       setImportSummary(summary);
       setImportOpen(true);
     } catch (err) {
-      setError(err?.message || 'Could not read that backup.');
+      setError(formatStorageError(err, 'Could not read that backup.'));
     }
   };
 
@@ -102,8 +103,16 @@ export default function SettingsDataPage() {
       setImportOpen(false);
       setImportPayload(null);
       setImportSummary(null);
+      const skipBits = [];
+      if (summary.skippedInvalid) {
+        skipBits.push(`${summary.skippedInvalid} invalid skipped`);
+      }
+      if (summary.skippedDuplicates) {
+        skipBits.push(`${summary.skippedDuplicates} duplicates skipped`);
+      }
+      const skipNote = skipBits.length ? ` (${skipBits.join(', ')})` : '';
       setStatus(
-        `Import complete — ${summary.recordCount} records restored. Reloading…`,
+        `Import complete — ${summary.recordCount} records restored${skipNote}. Reloading…`,
       );
       await refreshOnboarding();
       await refresh();
@@ -111,7 +120,7 @@ export default function SettingsDataPage() {
         window.location.assign('./');
       }, 600);
     } catch (err) {
-      setError(err?.message || 'Import failed.');
+      setError(formatStorageError(err, 'Import failed.'));
     } finally {
       setBusy(false);
     }
@@ -126,8 +135,8 @@ export default function SettingsDataPage() {
       setStatus('All local data cleared.');
       await refreshOnboarding();
       navigate('/onboarding', { replace: true });
-    } catch {
-      setError('Could not clear data.');
+    } catch (err) {
+      setError(formatStorageError(err, 'Could not clear data.'));
     } finally {
       setBusy(false);
     }
@@ -143,8 +152,8 @@ export default function SettingsDataPage() {
 
       <GuideCallout
         tone="info"
-        title="Privacy"
-        text="Stronger never uploads your personal health or progress data. Backups stay on your device unless you share the file yourself. Do not commit backup files to GitHub."
+        title="Privacy & limits"
+        text="Stronger never uploads your personal health or progress data. Backups stay on your device unless you share the file yourself. Clearing site data, full disks, or browser/OS resets can still erase local records — export backups often."
       />
 
       <Card className="settings-data__card">
@@ -190,7 +199,10 @@ export default function SettingsDataPage() {
             <div>
               <dt>Database</dt>
               <dd>
-                {storage.dbName} · v{storage.dbVersion}
+                {storage.dbName} · db v{storage.dbVersion}
+                {storage.appSchemaVersion != null
+                  ? ` · app schema v${storage.appSchemaVersion}`
+                  : ''}
               </dd>
             </div>
             <div>
@@ -268,7 +280,8 @@ export default function SettingsDataPage() {
             </p>
             <p>
               About <strong>{importSummary?.recordCount ?? 0}</strong> records
-              will be restored. This cannot be undone without another backup.
+              will be restored. If import fails, Stronger tries to restore your
+              previous data automatically.
             </p>
           </div>
         }

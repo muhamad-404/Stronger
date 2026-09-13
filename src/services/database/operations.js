@@ -1,37 +1,122 @@
 import { openDatabase } from './db.js';
+import { wrapStorageError } from '../../utils/storageErrors.js';
 
-function runTransaction(storeName, mode, executor) {
+/**
+ * Run a single-store IndexedDB transaction and wait until it completes.
+ * Resolving only on request success (before commit) risks silent data loss.
+ */
+export function runTransaction(storeName, mode, executor) {
   return openDatabase().then(
     (db) =>
       new Promise((resolve, reject) => {
-        const tx = db.transaction(storeName, mode);
-        const store = tx.objectStore(storeName);
-        let result;
+        let settled = false;
+        const fail = (error) => {
+          if (settled) return;
+          settled = true;
+          reject(wrapStorageError(error, 'Could not access local storage.'));
+        };
 
+        let tx;
         try {
-          result = executor(store);
+          tx = db.transaction(storeName, mode);
         } catch (error) {
-          reject(error);
+          fail(error);
           return;
         }
 
-        if (result instanceof IDBRequest) {
-          result.onsuccess = () => {
-            resolve(result.result);
-          };
-          result.onerror = () => {
-            reject(result.error);
-          };
-        } else {
-          resolve(result);
+        const store = tx.objectStore(storeName);
+        let requestResult;
+
+        try {
+          const result = executor(store);
+          if (result instanceof IDBRequest) {
+            result.onsuccess = () => {
+              requestResult = result.result;
+            };
+            result.onerror = () => {
+              fail(result.error);
+            };
+          } else {
+            requestResult = result;
+          }
+        } catch (error) {
+          try {
+            tx.abort();
+          } catch {
+            /* ignore */
+          }
+          fail(error);
+          return;
         }
 
-        tx.onerror = () => {
-          reject(tx.error);
+        tx.oncomplete = () => {
+          if (settled) return;
+          settled = true;
+          resolve(requestResult);
         };
-        tx.onabort = () => {
-          reject(tx.error || new Error('Transaction aborted.'));
+        tx.onerror = () => fail(tx.error);
+        tx.onabort = () =>
+          fail(tx.error || new Error('Transaction aborted.'));
+      }),
+  );
+}
+
+/**
+ * Multi-store readwrite transaction that commits atomically.
+ * @param {string[]} storeNames
+ * @param {(stores: Record<string, IDBObjectStore>) => unknown | Promise<unknown>} executor
+ */
+export function runMultiStoreTransaction(storeNames, executor) {
+  return openDatabase().then(
+    (db) =>
+      new Promise((resolve, reject) => {
+        let settled = false;
+        const fail = (error) => {
+          if (settled) return;
+          settled = true;
+          reject(wrapStorageError(error, 'Could not update local storage.'));
         };
+
+        let tx;
+        try {
+          tx = db.transaction(storeNames, 'readwrite');
+        } catch (error) {
+          fail(error);
+          return;
+        }
+
+        const stores = {};
+        for (const name of storeNames) {
+          stores[name] = tx.objectStore(name);
+        }
+
+        let requestResult;
+        try {
+          // IndexedDB transactions close when the sync turn ends — executor must be sync.
+          requestResult = executor(stores);
+          if (requestResult && typeof requestResult.then === 'function') {
+            throw new Error(
+              'Multi-store storage work must finish in one synchronous step.',
+            );
+          }
+        } catch (error) {
+          try {
+            tx.abort();
+          } catch {
+            /* ignore */
+          }
+          fail(error);
+          return;
+        }
+
+        tx.oncomplete = () => {
+          if (settled) return;
+          settled = true;
+          resolve(requestResult);
+        };
+        tx.onerror = () => fail(tx.error);
+        tx.onabort = () =>
+          fail(tx.error || new Error('Transaction aborted.'));
       }),
   );
 }
@@ -71,4 +156,21 @@ export function remove(storeName, key) {
 
 export function clear(storeName) {
   return runTransaction(storeName, 'readwrite', (store) => store.clear());
+}
+
+/**
+ * Clear many stores then put many rows in one atomic transaction.
+ * @param {Array<{ storeName: string, rows: object[] }>} batches
+ */
+export function replaceStoresAtomically(batches) {
+  const storeNames = [...new Set(batches.map((b) => b.storeName))];
+  return runMultiStoreTransaction(storeNames, (stores) => {
+    for (const { storeName, rows } of batches) {
+      const store = stores[storeName];
+      store.clear();
+      for (const row of rows) {
+        store.put(row);
+      }
+    }
+  });
 }

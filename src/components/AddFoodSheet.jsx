@@ -4,6 +4,7 @@ import Field from './Field.jsx';
 import { MEAL_SLOTS } from '../data/meals.js';
 import { PORTIONS } from '../services/foodLog.js';
 import { currentTimeLabel } from '../utils/dates.js';
+import { formatStorageError } from '../utils/storageErrors.js';
 import './AddFoodSheet.css';
 
 const EMPTY = {
@@ -67,8 +68,8 @@ export default function AddFoodSheet({
     try {
       await onSave(form);
       onClose();
-    } catch {
-      setError('Could not save. Please try again.');
+    } catch (err) {
+      setError(formatStorageError(err, 'Could not save. Please try again.'));
     } finally {
       setSaving(false);
     }

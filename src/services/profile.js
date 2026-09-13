@@ -1,4 +1,4 @@
-import { get, put, remove, getAll, STORES } from './database/index.js';
+import { get, put, remove, getAll, STORES, runMultiStoreTransaction } from './database/index.js';
 import { createId, toDateKey } from '../utils/dates.js';
 
 export const SETTINGS_KEYS = {
@@ -104,9 +104,14 @@ export function buildProfileRecord(answers) {
 export async function completeOnboarding(answers) {
   const profile = buildProfileRecord(answers);
   const now = profile.updatedAt;
-
-  await put(STORES.settings, profile);
-  await put(STORES.goals, {
+  const weightEntry = {
+    id: createId('weight'),
+    date: toDateKey(),
+    weightKg: profile.currentWeightKg,
+    source: 'onboarding',
+    createdAt: now,
+  };
+  const goal = {
     id: GOAL_ID,
     currentWeightKg: profile.currentWeightKg,
     startingWeightKg: profile.startingWeightKg,
@@ -114,20 +119,23 @@ export async function completeOnboarding(answers) {
     firstMilestoneKg: profile.firstMilestoneKg,
     heightCm: profile.heightCm,
     updatedAt: now,
-  });
-  await put(STORES.weightHistory, {
-    id: createId('weight'),
-    date: toDateKey(),
-    weightKg: profile.currentWeightKg,
-    source: 'onboarding',
-    createdAt: now,
-  });
-  await put(STORES.settings, {
+  };
+  const app = {
     id: SETTINGS_KEYS.app,
     onboardingCompleted: true,
     completedAt: now,
-  });
-  await clearOnboardingDraft();
+  };
+
+  await runMultiStoreTransaction(
+    [STORES.settings, STORES.goals, STORES.weightHistory],
+    (stores) => {
+      stores[STORES.settings].put(profile);
+      stores[STORES.settings].put(app);
+      stores[STORES.settings].delete(SETTINGS_KEYS.onboardingDraft);
+      stores[STORES.goals].put(goal);
+      stores[STORES.weightHistory].put(weightEntry);
+    },
+  );
 
   return profile;
 }
@@ -170,8 +178,7 @@ export async function saveProfileFromSettings(answers, previousProfile = null) {
     updatedAt: now,
   };
 
-  await put(STORES.settings, profile);
-  await put(STORES.goals, {
+  const goal = {
     id: GOAL_ID,
     currentWeightKg: profile.currentWeightKg,
     startingWeightKg: profile.startingWeightKg,
@@ -179,21 +186,33 @@ export async function saveProfileFromSettings(answers, previousProfile = null) {
     firstMilestoneKg: profile.firstMilestoneKg,
     heightCm: profile.heightCm,
     updatedAt: now,
-  });
+  };
 
   const weightChanged =
     !previousProfile ||
     previousProfile.currentWeightKg !== profile.currentWeightKg;
 
-  if (weightChanged) {
-    await put(STORES.weightHistory, {
-      id: createId('weight'),
-      date: toDateKey(),
-      weightKg: profile.currentWeightKg,
-      source: 'settings',
-      createdAt: now,
-    });
-  }
+  const weightEntry = weightChanged
+    ? {
+        id: createId('weight'),
+        date: toDateKey(),
+        weightKg: profile.currentWeightKg,
+        source: 'settings',
+        createdAt: now,
+      }
+    : null;
+
+  const storeNames = weightEntry
+    ? [STORES.settings, STORES.goals, STORES.weightHistory]
+    : [STORES.settings, STORES.goals];
+
+  await runMultiStoreTransaction(storeNames, (stores) => {
+    stores[STORES.settings].put(profile);
+    stores[STORES.goals].put(goal);
+    if (weightEntry) {
+      stores[STORES.weightHistory].put(weightEntry);
+    }
+  });
 
   return profile;
 }

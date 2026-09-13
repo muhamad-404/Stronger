@@ -1,4 +1,4 @@
-import { get, put, getAll, remove, STORES } from './database/index.js';
+import { get, put, getAll, remove, STORES, runMultiStoreTransaction } from './database/index.js';
 import {
   ensureStableWeightGoals,
   getProfile,
@@ -13,6 +13,7 @@ import {
   createId,
   formatKg,
   listDateKeys,
+  isDateKey,
   parseDateKey,
   toDateKey,
 } from '../utils/dates.js';
@@ -48,6 +49,9 @@ export async function getWeightHistory() {
  */
 export async function logWeight({ date, weightKg, note = '' }) {
   const dateKey = date || toDateKey();
+  if (!isDateKey(dateKey)) {
+    throw new Error('Weight entry needs a valid date.');
+  }
   const value = Number(weightKg);
   if (!Number.isFinite(value) || value < 30 || value > 200) {
     throw new Error('Enter a weight between 30 and 200 kg.');
@@ -62,16 +66,22 @@ export async function logWeight({ date, weightKg, note = '' }) {
     source: 'progress',
     createdAt: now,
   };
-  await put(STORES.weightHistory, entry);
 
   const profile = await getProfile();
-  if (profile) {
-    await put(STORES.settings, {
-      ...profile,
-      currentWeightKg: entry.weightKg,
-      updatedAt: now,
-    });
-  }
+  const storeNames = profile
+    ? [STORES.weightHistory, STORES.settings]
+    : [STORES.weightHistory];
+
+  await runMultiStoreTransaction(storeNames, (stores) => {
+    stores[STORES.weightHistory].put(entry);
+    if (profile) {
+      stores[STORES.settings].put({
+        ...profile,
+        currentWeightKg: entry.weightKg,
+        updatedAt: now,
+      });
+    }
+  });
 
   return entry;
 }
