@@ -33,10 +33,21 @@ It uses:
 
 Create a GitHub repo and push this project (source only — never commit personal backups or exported JSON).
 
-### 2. Enable GitHub Pages (Actions)
+### 2. Enable GitHub Pages (required before first deploy)
 
-1. Open the repo on GitHub → **Settings** → **Pages**
-2. Under **Build and deployment** → **Source**, choose **GitHub Actions**
+The workflow **build** can succeed while **deploy** fails with `404` / `Failed to create deployment` if Pages is not enabled yet.
+
+1. Open **https://github.com/muhamad-404/Stronger/settings/pages**
+2. Under **Build and deployment** → **Source**, choose **GitHub Actions** (not “Deploy from a branch”)
+3. Save if prompted
+
+Also confirm Actions can write:
+
+1. **Settings** → **Actions** → **General**
+2. **Workflow permissions** → **Read and write permissions**
+3. Ensure **Allow GitHub Actions to create and approve pull requests** is optional; Pages only needs `pages: write` + `id-token: write` (already in the workflow)
+
+Then re-run the failed workflow: **Actions** → **Deploy to GitHub Pages** → failed run → **Re-run failed jobs** (or push again).
 
 ### 3. Allow the workflow to run
 
@@ -54,20 +65,19 @@ The workflow in [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml):
 
 After the workflow succeeds, the site is at:
 
-`https://USERNAME.github.io/REPOSITORY/`
+`https://muhamad-404.github.io/Stronger/`
 
 Routes look like:
 
-`https://USERNAME.github.io/REPOSITORY/#/eat`
+`https://muhamad-404.github.io/Stronger/#/eat`
 
-### First-time Actions permissions
+### If deploy still fails with 404
 
-If deploy fails with a permissions error:
+- Pages Source must be **GitHub Actions**, not branch `gh-pages` / `docs`
+- Repo must not be empty / deleted; you need admin access to enable Pages
+- Private org repos sometimes need Pages enabled at the org level
 
-1. **Settings** → **Actions** → **General**
-2. Under **Workflow permissions**, select **Read and write permissions** (or ensure Pages write is allowed)
-3. Re-run the workflow
-
+Node.js deprecation annotations about Actions on Node 20 are warnings; the workflow uses Node **24** for the app build.
 ## PWA / offline
 
 After an online visit, Stronger can load offline via the service worker. Progress remains in IndexedDB on that device. Use **Settings → Data & backup** to export a JSON backup — keep backups off GitHub.
