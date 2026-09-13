@@ -1,16 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Button from './Button.jsx';
 import Field from './Field.jsx';
 import { toDateKey } from '../utils/dates.js';
 import { formatStorageError } from '../utils/storageErrors.js';
+import { useDialogA11y } from '../hooks/useDialogA11y.js';
 import './ProgressSheet.css';
 
 export default function WeightLogSheet({ open, onClose, onSave }) {
+  const panelRef = useRef(null);
   const [date, setDate] = useState(toDateKey());
   const [weight, setWeight] = useState('');
   const [note, setNote] = useState('');
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
+
+  useDialogA11y({ open, onClose, panelRef });
 
   useEffect(() => {
     if (!open) return;
@@ -36,15 +40,22 @@ export default function WeightLogSheet({ open, onClose, onSave }) {
   };
 
   return (
-    <div className="progress-sheet" role="dialog" aria-modal="true">
+    <div
+      className="progress-sheet"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="weight-log-title"
+    >
       <button
         type="button"
         className="progress-sheet__backdrop"
         aria-label="Close"
         onClick={onClose}
       />
-      <div className="progress-sheet__panel">
-        <h2 className="progress-sheet__title">Log weight</h2>
+      <div className="progress-sheet__panel" ref={panelRef}>
+        <h2 id="weight-log-title" className="progress-sheet__title">
+          Log weight
+        </h2>
         <Field
           id="pw-date"
           label="Date"
@@ -65,6 +76,7 @@ export default function WeightLogSheet({ open, onClose, onSave }) {
           max={200}
           step="0.1"
           placeholder="e.g. 44.1"
+          required
         />
         <Field
           id="pw-note"

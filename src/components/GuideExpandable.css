@@ -47,6 +47,10 @@
   animation: guide-expand-in var(--duration-fast) var(--ease-out);
 }
 
+.guide-expandable__panel[hidden] {
+  display: none;
+}
+
 @keyframes guide-expand-in {
   from {
     opacity: 0;

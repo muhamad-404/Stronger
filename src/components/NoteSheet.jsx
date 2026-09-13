@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Button from './Button.jsx';
+import { useDialogA11y } from '../hooks/useDialogA11y.js';
 import './NoteSheet.css';
 
 export default function NoteSheet({
@@ -8,9 +9,13 @@ export default function NoteSheet({
   onClose,
   onSave,
 }) {
+  const panelRef = useRef(null);
+  const inputRef = useRef(null);
   const [value, setValue] = useState(initialValue);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
+
+  useDialogA11y({ open, onClose, panelRef, initialFocusRef: inputRef });
 
   useEffect(() => {
     if (open) {
@@ -35,28 +40,38 @@ export default function NoteSheet({
   };
 
   return (
-    <div className="note-sheet" role="dialog" aria-modal="true" aria-labelledby="note-sheet-title">
+    <div
+      className="note-sheet"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="note-sheet-title"
+      aria-describedby="note-sheet-hint"
+    >
       <button
         type="button"
         className="note-sheet__backdrop"
         aria-label="Close note"
         onClick={onClose}
       />
-      <div className="note-sheet__panel">
+      <div className="note-sheet__panel" ref={panelRef}>
         <h2 id="note-sheet-title" className="note-sheet__title">
           Today&apos;s note
         </h2>
-        <p className="note-sheet__hint">
+        <p id="note-sheet-hint" className="note-sheet__hint">
           A quick thought about how you feel or what helped today.
         </p>
+        <label className="visually-hidden" htmlFor="note-sheet-input">
+          Note text
+        </label>
         <textarea
+          id="note-sheet-input"
+          ref={inputRef}
           className="note-sheet__input"
           value={value}
           onChange={(e) => setValue(e.target.value)}
           rows={4}
           maxLength={500}
           placeholder="Optional note…"
-          autoFocus
         />
         {error ? (
           <p className="note-sheet__error" role="alert">

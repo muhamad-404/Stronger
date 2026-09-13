@@ -63,7 +63,9 @@ export default function SolverSectionCard({ section }) {
             />
           ) : null}
         </div>
-      ) : null}
+      ) : (
+        <div id={panelId} hidden />
+      )}
     </div>
   );
 }

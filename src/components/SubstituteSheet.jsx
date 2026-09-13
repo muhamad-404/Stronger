@@ -1,4 +1,6 @@
+import { useRef } from 'react';
 import Button from './Button.jsx';
+import { useDialogA11y } from '../hooks/useDialogA11y.js';
 import './SubstituteSheet.css';
 
 export default function SubstituteSheet({
@@ -8,6 +10,9 @@ export default function SubstituteSheet({
   onClose,
   onSelect,
 }) {
+  const panelRef = useRef(null);
+  useDialogA11y({ open, onClose, panelRef });
+
   if (!open) return null;
 
   return (
@@ -16,6 +21,7 @@ export default function SubstituteSheet({
       role="dialog"
       aria-modal="true"
       aria-labelledby="substitute-sheet-title"
+      aria-describedby="substitute-sheet-hint"
     >
       <button
         type="button"
@@ -23,38 +29,50 @@ export default function SubstituteSheet({
         aria-label="Close"
         onClick={onClose}
       />
-      <div className="substitute-sheet__panel">
+      <div className="substitute-sheet__panel" ref={panelRef}>
         <h2 id="substitute-sheet-title" className="substitute-sheet__title">
           Choose a substitute
         </h2>
-        <p className="substitute-sheet__hint">
+        <p id="substitute-sheet-hint" className="substitute-sheet__hint">
           Same meal type — pick what feels doable today.
         </p>
         <ul className="substitute-sheet__list">
-          {alternatives.map((meal) => (
-            <li key={meal.id}>
-              <button
-                type="button"
-                className={[
-                  'substitute-sheet__item',
-                  meal.id === currentMealId
-                    ? 'substitute-sheet__item--current'
-                    : '',
-                ]
-                  .filter(Boolean)
-                  .join(' ')}
-                onClick={() => onSelect(meal.id)}
-              >
-                <span className="substitute-sheet__item-title">{meal.title}</span>
-                <span className="substitute-sheet__item-desc">
-                  {meal.description}
-                </span>
-              </button>
-            </li>
-          ))}
+          {alternatives.map((meal) => {
+            const isCurrent = meal.id === currentMealId;
+            return (
+              <li key={meal.id}>
+                <button
+                  type="button"
+                  className={[
+                    'substitute-sheet__item',
+                    isCurrent ? 'substitute-sheet__item--current' : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
+                  aria-current={isCurrent ? 'true' : undefined}
+                  onClick={() => onSelect(meal.id)}
+                >
+                  <span className="substitute-sheet__item-title">
+                    {meal.title}
+                    {isCurrent ? (
+                      <span className="substitute-sheet__current-tag">
+                        {' '}
+                        (current)
+                      </span>
+                    ) : null}
+                  </span>
+                  <span className="substitute-sheet__item-desc">
+                    {meal.description}
+                  </span>
+                </button>
+              </li>
+            );
+          })}
         </ul>
         {!alternatives.length ? (
-          <p className="substitute-sheet__empty">No other options in this category yet.</p>
+          <p className="substitute-sheet__empty">
+            No other options in this category yet.
+          </p>
         ) : null}
         <Button variant="ghost" fullWidth onClick={onClose}>
           Cancel

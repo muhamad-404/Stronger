@@ -46,7 +46,9 @@ export default function SessionExerciseRow({
                 .filter(Boolean)
                 .join(' ')}
               aria-pressed={set.completed}
-              aria-label={`Set ${set.index + 1}`}
+              aria-label={`Set ${set.index + 1}${
+                set.completed ? ', completed' : ', not completed'
+              }`}
               onClick={() =>
                 onToggleSet?.(
                   exerciseState.exerciseId,

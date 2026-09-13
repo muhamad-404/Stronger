@@ -5,9 +5,10 @@
   background: var(--color-sage-soft);
   color: var(--color-text-muted);
   font-size: var(--text-sm);
+  line-height: var(--leading-normal);
 }
 
 .app-layout__status--error {
-  background: color-mix(in srgb, var(--color-danger) 12%, white);
-  color: var(--color-danger);
+  /* Color/background from polish.css shared feedback */
+  margin-bottom: var(--space-4);
 }

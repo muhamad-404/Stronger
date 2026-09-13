@@ -5,6 +5,7 @@ import App from './App.jsx';
 import { OnboardingStatusProvider } from './hooks/useOnboardingStatus.jsx';
 import './styles/global.css';
 import './styles/mobile.css';
+import './styles/polish.css';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

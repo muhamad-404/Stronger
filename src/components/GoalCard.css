@@ -23,7 +23,7 @@
 }
 
 .goal-card__cat--food {
-  color: #8a6a4a;
+  color: color-mix(in srgb, var(--color-warm) 70%, var(--color-text));
 }
 
 .goal-card__cat--strength {
@@ -31,7 +31,7 @@
 }
 
 .goal-card__cat--sleep {
-  color: #6a7a9a;
+  color: color-mix(in srgb, var(--color-sage) 45%, #5a6a8a);
 }
 
 .goal-card__cat--routine {

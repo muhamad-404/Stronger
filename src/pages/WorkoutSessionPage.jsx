@@ -93,7 +93,7 @@ export default function WorkoutSessionPage() {
           title="Workout complete"
           subtitle={`${workout.name} · nice work showing up.`}
         />
-        <Card>
+        <Card className="workout-session__complete-card">
           <p className="move-subpage__copy">
             You finished {finalProgress.completedExercises} of{' '}
             {finalProgress.totalExercises} exercises (
@@ -106,7 +106,11 @@ export default function WorkoutSessionPage() {
             </p>
           ) : null}
           <div className="workout-session__done-actions">
-            <Button variant="primary" onClick={() => navigate('/move')}>
+            <Button
+              variant="primary"
+              className="btn--finish-success"
+              onClick={() => navigate('/move')}
+            >
               Back to Move
             </Button>
             <Link to="/">Home</Link>
@@ -214,6 +218,7 @@ export default function WorkoutSessionPage() {
         variant="primary"
         size="lg"
         fullWidth
+        className={saving ? 'btn--finish-success' : ''}
         disabled={saving}
         onClick={handleFinish}
       >

@@ -17,18 +17,6 @@
   gap: var(--space-5);
 }
 
-.settings-page__success {
-  margin: 0;
-  font-size: var(--text-sm);
-  color: var(--color-success);
-}
-
-.settings-page__alert {
-  margin: 0;
-  font-size: var(--text-sm);
-  color: var(--color-danger);
-}
-
 .settings-page__privacy {
   margin: 0;
   font-size: var(--text-sm);

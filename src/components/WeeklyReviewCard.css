@@ -1,7 +1,7 @@
 .weekly-review__label {
   font-size: var(--text-xs);
   font-weight: var(--weight-semibold);
-  letter-spacing: 0.06em;
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--color-text-muted);
   margin: 0;

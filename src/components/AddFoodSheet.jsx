@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Button from './Button.jsx';
 import Field from './Field.jsx';
 import { MEAL_SLOTS } from '../data/meals.js';
 import { PORTIONS } from '../services/foodLog.js';
 import { currentTimeLabel } from '../utils/dates.js';
 import { formatStorageError } from '../utils/storageErrors.js';
+import { useDialogA11y } from '../hooks/useDialogA11y.js';
 import './AddFoodSheet.css';
 
 const EMPTY = {
@@ -28,9 +29,12 @@ export default function AddFoodSheet({
   onClose,
   onSave,
 }) {
+  const panelRef = useRef(null);
   const [form, setForm] = useState(EMPTY);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
+
+  useDialogA11y({ open, onClose, panelRef });
 
   useEffect(() => {
     if (!open) return;
@@ -88,7 +92,7 @@ export default function AddFoodSheet({
         aria-label="Close"
         onClick={onClose}
       />
-      <div className="add-food-sheet__panel">
+      <div className="add-food-sheet__panel" ref={panelRef}>
         <h2 id="add-food-title" className="add-food-sheet__title">
           {mode === 'edit' ? 'Edit food' : 'Add food'}
         </h2>
@@ -135,12 +139,19 @@ export default function AddFoodSheet({
           </div>
         ) : null}
 
-        <p className="add-food-sheet__field-label">Portion</p>
-        <div className="add-food-sheet__portions">
+        <p className="add-food-sheet__field-label" id="flog-portion-label">
+          Portion
+        </p>
+        <div
+          className="add-food-sheet__portions"
+          role="group"
+          aria-labelledby="flog-portion-label"
+        >
           {PORTIONS.map((portion) => (
             <button
               key={portion}
               type="button"
+              aria-pressed={form.portion === portion}
               className={[
                 'add-food-sheet__portion',
                 form.portion === portion ? 'add-food-sheet__portion--on' : '',
@@ -205,7 +216,7 @@ export default function AddFoodSheet({
           Marked as eaten
         </label>
 
-        {error && form.foodTitle.trim() ? (
+        {error ? (
           <p className="add-food-sheet__error" role="alert">
             {error}
           </p>

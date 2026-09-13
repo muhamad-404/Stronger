@@ -66,18 +66,18 @@ export default function FoodLogItem({
         <button
           type="button"
           className="food-log-item__icon-btn"
-          aria-label="Edit"
+          aria-label={`Edit ${entry.foodTitle}`}
           onClick={() => onEdit?.(entry)}
         >
-          <Pencil size={16} />
+          <Pencil size={16} aria-hidden />
         </button>
         <button
           type="button"
           className="food-log-item__icon-btn"
-          aria-label="Delete"
+          aria-label={`Delete ${entry.foodTitle}`}
           onClick={() => onDelete?.(entry)}
         >
-          <Trash2 size={16} />
+          <Trash2 size={16} aria-hidden />
         </button>
       </div>
     </div>

@@ -2,11 +2,24 @@ import Card from './Card.jsx';
 import './WeeklyConsistency.css';
 
 const DAY_LETTERS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+const DAY_NAMES = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+];
 
-function dayLetterForKey(dateKey) {
+function dayMeta(dateKey) {
   const [y, m, d] = dateKey.split('-').map(Number);
   const date = new Date(y, m - 1, d);
-  return DAY_LETTERS[date.getDay()];
+  const index = date.getDay();
+  return {
+    letter: DAY_LETTERS[index],
+    name: DAY_NAMES[index],
+  };
 }
 
 export default function WeeklyConsistency({ weeklySummary }) {
@@ -23,22 +36,29 @@ export default function WeeklyConsistency({ weeklySummary }) {
         </p>
       </div>
       <ul className="weekly-consistency__days" aria-label="Weekly check-ins">
-        {days.map((day) => (
-          <li key={day.dateKey} className="weekly-consistency__day">
-            <span
-              className={[
-                'weekly-consistency__dot',
-                day.hasCheckIn ? 'weekly-consistency__dot--on' : '',
-              ]
-                .filter(Boolean)
-                .join(' ')}
-              title={`${day.completedCount} tasks`}
-            />
-            <span className="weekly-consistency__letter">
-              {dayLetterForKey(day.dateKey)}
-            </span>
-          </li>
-        ))}
+        {days.map((day) => {
+          const meta = dayMeta(day.dateKey);
+          const status = day.hasCheckIn
+            ? `${meta.name}: check-in logged, ${day.completedCount} tasks`
+            : `${meta.name}: no check-in`;
+          return (
+            <li key={day.dateKey} className="weekly-consistency__day">
+              <span
+                className={[
+                  'weekly-consistency__dot',
+                  day.hasCheckIn ? 'weekly-consistency__dot--on' : '',
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
+                aria-hidden
+              />
+              <span className="weekly-consistency__letter" aria-hidden>
+                {meta.letter}
+              </span>
+              <span className="visually-hidden">{status}</span>
+            </li>
+          );
+        })}
       </ul>
     </Card>
   );

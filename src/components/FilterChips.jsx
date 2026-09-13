@@ -19,15 +19,18 @@ export default function FilterChips({
 }) {
   return (
     <div className="filter-chips">
-      <div className="filter-chips__row" role="tablist" aria-label="Meal type">
+      <div
+        className="filter-chips__row"
+        role="group"
+        aria-label="Filter by meal type"
+      >
         {PRIMARY.map((chip) => {
           const active = category === chip.id;
           return (
             <button
               key={chip.id || 'all'}
               type="button"
-              role="tab"
-              aria-selected={active}
+              aria-pressed={active}
               className={[
                 'filter-chips__chip',
                 active ? 'filter-chips__chip--active' : '',
@@ -41,7 +44,11 @@ export default function FilterChips({
           );
         })}
       </div>
-      <div className="filter-chips__row filter-chips__row--secondary">
+      <div
+        className="filter-chips__row filter-chips__row--secondary"
+        role="group"
+        aria-label="Additional filters"
+      >
         <button
           type="button"
           className={[

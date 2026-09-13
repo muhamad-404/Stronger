@@ -1,5 +1,6 @@
-import { useEffect, useId, useRef } from 'react';
+import { useId, useRef } from 'react';
 import Button from './Button.jsx';
+import { useDialogA11y } from '../hooks/useDialogA11y.js';
 import './ConfirmDialog.css';
 
 /**
@@ -17,17 +18,16 @@ export default function ConfirmDialog({
   onCancel,
 }) {
   const titleId = useId();
+  const bodyId = useId();
   const panelRef = useRef(null);
 
-  useEffect(() => {
-    if (!open) return undefined;
-    const onKey = (e) => {
-      if (e.key === 'Escape' && !busy) onCancel?.();
-    };
-    window.addEventListener('keydown', onKey);
-    panelRef.current?.focus?.();
-    return () => window.removeEventListener('keydown', onKey);
-  }, [open, busy, onCancel]);
+  useDialogA11y({
+    open,
+    onClose: () => {
+      if (!busy) onCancel?.();
+    },
+    panelRef,
+  });
 
   if (!open) return null;
 
@@ -52,6 +52,7 @@ export default function ConfirmDialog({
         role="alertdialog"
         aria-modal="true"
         aria-labelledby={titleId}
+        aria-describedby={bodyId}
         tabIndex={-1}
         ref={panelRef}
       >
@@ -59,16 +60,20 @@ export default function ConfirmDialog({
           {title}
         </h2>
         {typeof body === 'string' ? (
-          <p className="confirm-dialog__body">{body}</p>
+          <p id={bodyId} className="confirm-dialog__body">
+            {body}
+          </p>
         ) : (
-          <div className="confirm-dialog__body">{body}</div>
+          <div id={bodyId} className="confirm-dialog__body">
+            {body}
+          </div>
         )}
         <div className="confirm-dialog__actions">
           <Button variant="ghost" onClick={onCancel} disabled={busy}>
             {cancelLabel}
           </Button>
           <Button
-            variant={tone === 'danger' ? 'primary' : 'primary'}
+            variant="primary"
             className={
               tone === 'danger' ? 'confirm-dialog__confirm--danger' : ''
             }

@@ -32,11 +32,13 @@ export default function GuideExpandable({ section }) {
           aria-hidden
         />
       </button>
-      {open ? (
-        <div id={panelId} className="guide-expandable__panel">
-          <GuideBlocks blocks={section.blocks} />
-        </div>
-      ) : null}
+      <div
+        id={panelId}
+        className="guide-expandable__panel"
+        hidden={!open}
+      >
+        {open ? <GuideBlocks blocks={section.blocks} /> : null}
+      </div>
     </div>
   );
 }

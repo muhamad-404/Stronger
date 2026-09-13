@@ -22,7 +22,7 @@ export default function DateSwitcher({
         onClick={onPrev}
         aria-label="Previous day"
       >
-        <ChevronLeft size={20} />
+        <ChevronLeft size={20} aria-hidden />
       </button>
       <div className="date-switcher__center">
         <p className="date-switcher__label">{label}</p>
@@ -40,7 +40,7 @@ export default function DateSwitcher({
         aria-label="Next day"
         disabled={!canGoNext}
       >
-        <ChevronRight size={20} />
+        <ChevronRight size={20} aria-hidden />
       </button>
     </div>
   );

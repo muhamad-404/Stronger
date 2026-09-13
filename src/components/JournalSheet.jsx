@@ -1,15 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Button from './Button.jsx';
 import Field from './Field.jsx';
+import { useDialogA11y } from '../hooks/useDialogA11y.js';
 import './ProgressSheet.css';
 
 export default function JournalSheet({ open, initial, onClose, onSave }) {
+  const panelRef = useRef(null);
   const [energy, setEnergy] = useState(3);
   const [appetite, setAppetite] = useState(3);
   const [sleepHours, setSleepHours] = useState('');
   const [note, setNote] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
+
+  useDialogA11y({ open, onClose, panelRef });
 
   useEffect(() => {
     if (!open) return;
@@ -43,16 +47,24 @@ export default function JournalSheet({ open, initial, onClose, onSave }) {
   };
 
   return (
-    <div className="progress-sheet" role="dialog" aria-modal="true">
+    <div
+      className="progress-sheet"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="journal-sheet-title"
+      aria-describedby="journal-sheet-hint"
+    >
       <button
         type="button"
         className="progress-sheet__backdrop"
         aria-label="Close"
         onClick={onClose}
       />
-      <div className="progress-sheet__panel">
-        <h2 className="progress-sheet__title">Today&apos;s check-in</h2>
-        <p className="progress-sheet__hint">
+      <div className="progress-sheet__panel" ref={panelRef}>
+        <h2 id="journal-sheet-title" className="progress-sheet__title">
+          Today&apos;s check-in
+        </h2>
+        <p id="journal-sheet-hint" className="progress-sheet__hint">
           Energy and appetite from 1 (low) to 5 (strong).
         </p>
 
@@ -68,6 +80,7 @@ export default function JournalSheet({ open, initial, onClose, onSave }) {
           step={1}
           value={energy}
           onChange={(e) => setEnergy(e.target.value)}
+          aria-valuetext={`${energy} out of 5`}
         />
 
         <label className="progress-sheet__range-label" htmlFor="pj-appetite">
@@ -82,6 +95,7 @@ export default function JournalSheet({ open, initial, onClose, onSave }) {
           step={1}
           value={appetite}
           onChange={(e) => setAppetite(e.target.value)}
+          aria-valuetext={`${appetite} out of 5`}
         />
 
         <Field

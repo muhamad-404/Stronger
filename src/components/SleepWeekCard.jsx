@@ -63,17 +63,22 @@ export default function SleepWeekCard({ week }) {
                   .filter(Boolean)
                   .join(' ')}
                 style={{ height: `${Math.max(fill, logged ? 18 : 8)}%` }}
-                title={
-                  logged
-                    ? `${night.hours != null ? `${night.hours}h` : 'Logged'}${
-                        night.quality != null ? ` · Q${night.quality}` : ''
-                      }`
-                    : 'No log'
-                }
+                aria-hidden
               />
-              <span className="sleep-week__dow">{shortDay(night.date)}</span>
-              <span className="sleep-week__hours">
+              <span className="sleep-week__dow" aria-hidden>
+                {shortDay(night.date)}
+              </span>
+              <span className="sleep-week__hours" aria-hidden>
                 {night.hours != null ? night.hours : '·'}
+              </span>
+              <span className="visually-hidden">
+                {shortDay(night.date)}
+                {': '}
+                {logged
+                  ? `${night.hours != null ? `${night.hours} hours` : 'logged'}${
+                      night.quality != null ? `, quality ${night.quality} of 5` : ''
+                    }`
+                  : 'no sleep log'}
               </span>
             </li>
           );

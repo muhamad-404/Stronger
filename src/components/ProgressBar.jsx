@@ -27,6 +27,7 @@ export default function ProgressBar({
         aria-valuemin={0}
         aria-valuemax={safeMax}
         aria-valuenow={clamped}
+        aria-valuetext={`${percent} percent`}
         aria-label={label || 'Progress'}
       >
         <div

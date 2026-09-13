@@ -8,7 +8,10 @@ export default function AppLayout() {
 
   return (
     <div className="app-shell">
-      <main className="app-main">
+      <a className="skip-link" href="#main-content">
+        Skip to content
+      </a>
+      <main id="main-content" className="app-main" tabIndex={-1}>
         {error ? (
           <p className="app-layout__status app-layout__status--error" role="alert">
             Local storage could not start. Your progress may not save on this

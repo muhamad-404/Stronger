@@ -2,7 +2,7 @@
  * Stronger service worker — caches the app shell for offline use.
  * User progress stays in IndexedDB on-device; this SW never syncs personal data.
  */
-const CACHE_NAME = 'stronger-shell-v2';
+const CACHE_NAME = 'stronger-shell-v3';
 
 const PRECACHE_URLS = [
   './',

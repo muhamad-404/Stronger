@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Button from './Button.jsx';
 import Field from './Field.jsx';
+import { useDialogA11y } from '../hooks/useDialogA11y.js';
 import './ProgressSheet.css';
 
 export default function GoalsEditSheet({ open, goals, onClose, onSave }) {
+  const panelRef = useRef(null);
   const [form, setForm] = useState({
     startingWeightKg: '',
     milestone1Kg: '',
@@ -12,6 +14,8 @@ export default function GoalsEditSheet({ open, goals, onClose, onSave }) {
   });
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
+
+  useDialogA11y({ open, onClose, panelRef });
 
   useEffect(() => {
     if (!open || !goals) return;
@@ -58,16 +62,24 @@ export default function GoalsEditSheet({ open, goals, onClose, onSave }) {
   };
 
   return (
-    <div className="progress-sheet" role="dialog" aria-modal="true">
+    <div
+      className="progress-sheet"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="goals-edit-title"
+      aria-describedby="goals-edit-hint"
+    >
       <button
         type="button"
         className="progress-sheet__backdrop"
         aria-label="Close"
         onClick={onClose}
       />
-      <div className="progress-sheet__panel">
-        <h2 className="progress-sheet__title">Edit goals</h2>
-        <p className="progress-sheet__hint">
+      <div className="progress-sheet__panel" ref={panelRef}>
+        <h2 id="goals-edit-title" className="progress-sheet__title">
+          Edit goals
+        </h2>
+        <p id="goals-edit-hint" className="progress-sheet__hint">
           Gentle milestones — you can adjust them anytime.
         </p>
         <Field

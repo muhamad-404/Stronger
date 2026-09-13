@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Button from './Button.jsx';
 import Field from './Field.jsx';
 import { GOAL_CATEGORIES, GOAL_STATUSES } from '../services/goals.js';
+import { useDialogA11y } from '../hooks/useDialogA11y.js';
 import './ProgressSheet.css';
 import './GoalFormSheet.css';
 
@@ -27,10 +28,13 @@ export default function GoalFormSheet({
   onProgress,
   saving = false,
 }) {
+  const panelRef = useRef(null);
   const [form, setForm] = useState(EMPTY);
   const [progressValue, setProgressValue] = useState('');
   const [error, setError] = useState(null);
   const [tab, setTab] = useState('details');
+
+  useDialogA11y({ open, onClose, panelRef });
 
   useEffect(() => {
     if (!open) return;
@@ -116,27 +120,32 @@ export default function GoalFormSheet({
   };
 
   return (
-    <div className="progress-sheet" role="dialog" aria-modal="true">
+    <div
+      className="progress-sheet"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="goal-form-title"
+      aria-describedby="goal-form-hint"
+    >
       <button
         type="button"
         className="progress-sheet__backdrop"
         aria-label="Close"
         onClick={onClose}
       />
-      <div className="progress-sheet__panel">
-        <h2 className="progress-sheet__title">
+      <div className="progress-sheet__panel" ref={panelRef}>
+        <h2 id="goal-form-title" className="progress-sheet__title">
           {mode === 'create' ? 'New goal' : 'Goal'}
         </h2>
-        <p className="progress-sheet__hint">
+        <p id="goal-form-hint" className="progress-sheet__hint">
           Weight, food, strength, sleep, or routine — whatever supports you.
         </p>
 
         {mode === 'edit' && goal?.tracking === 'manual' ? (
-          <div className="goal-form__tabs" role="tablist">
+          <div className="goal-form__tabs" role="group" aria-label="Goal sections">
             <button
               type="button"
-              role="tab"
-              aria-selected={tab === 'progress'}
+              aria-pressed={tab === 'progress'}
               className={
                 tab === 'progress'
                   ? 'goal-form__tab goal-form__tab--active'
@@ -148,8 +157,7 @@ export default function GoalFormSheet({
             </button>
             <button
               type="button"
-              role="tab"
-              aria-selected={tab === 'details'}
+              aria-pressed={tab === 'details'}
               className={
                 tab === 'details'
                   ? 'goal-form__tab goal-form__tab--active'

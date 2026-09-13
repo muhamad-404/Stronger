@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Button from './Button.jsx';
 import Field from './Field.jsx';
 import { estimateSleepHours } from '../services/sleep.js';
+import { useDialogA11y } from '../hooks/useDialogA11y.js';
 import './ProgressSheet.css';
 import './SleepLogSheet.css';
 
@@ -13,11 +14,14 @@ export default function SleepLogSheet({
   onSave,
   saving = false,
 }) {
+  const panelRef = useRef(null);
   const [bedtime, setBedtime] = useState('');
   const [wakeTime, setWakeTime] = useState('');
   const [quality, setQuality] = useState(3);
   const [note, setNote] = useState('');
   const [error, setError] = useState(null);
+
+  useDialogA11y({ open, onClose, panelRef });
 
   useEffect(() => {
     if (!open) return;
@@ -55,16 +59,24 @@ export default function SleepLogSheet({
   };
 
   return (
-    <div className="progress-sheet" role="dialog" aria-modal="true">
+    <div
+      className="progress-sheet"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="sleep-log-title"
+      aria-describedby="sleep-log-hint"
+    >
       <button
         type="button"
         className="progress-sheet__backdrop"
         aria-label="Close"
         onClick={onClose}
       />
-      <div className="progress-sheet__panel">
-        <h2 className="progress-sheet__title">Log last night’s sleep</h2>
-        <p className="progress-sheet__hint">
+      <div className="progress-sheet__panel" ref={panelRef}>
+        <h2 id="sleep-log-title" className="progress-sheet__title">
+          Log last night’s sleep
+        </h2>
+        <p id="sleep-log-hint" className="progress-sheet__hint">
           Times are for the night that just ended. Duration updates automatically.
         </p>
 
@@ -75,6 +87,7 @@ export default function SleepLogSheet({
             type="time"
             value={bedtime}
             onChange={(e) => setBedtime(e.target.value)}
+            required
           />
           <Field
             id="sleep-wake"
@@ -82,10 +95,11 @@ export default function SleepLogSheet({
             type="time"
             value={wakeTime}
             onChange={(e) => setWakeTime(e.target.value)}
+            required
           />
         </div>
 
-        <p className="sleep-log__estimate">
+        <p className="sleep-log__estimate" aria-live="polite">
           Estimated sleep:{' '}
           <strong>{estimated != null ? `${estimated} hours` : '—'}</strong>
         </p>
@@ -102,6 +116,7 @@ export default function SleepLogSheet({
           step={1}
           value={quality}
           onChange={(e) => setQuality(e.target.value)}
+          aria-valuetext={`${quality} out of 5`}
         />
         <p className="sleep-log__quality-hint">
           1 = rough · 3 = okay · 5 = rested

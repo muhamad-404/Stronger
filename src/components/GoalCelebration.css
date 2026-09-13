@@ -3,12 +3,7 @@
   overflow: hidden;
   padding: var(--space-4) var(--space-5);
   border-radius: var(--radius-md);
-  background:
-    linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--color-sage-soft) 70%, white),
-      color-mix(in srgb, var(--color-accent-soft) 55%, white)
-    );
+  background: color-mix(in srgb, var(--color-sage-soft) 55%, white);
   border: 1px solid color-mix(in srgb, var(--color-sage) 22%, transparent);
   animation: goal-celebration-in var(--duration-normal) var(--ease-out);
 }
@@ -25,7 +20,7 @@
   margin: 0 0 var(--space-1);
   font-size: var(--text-xs);
   font-weight: var(--weight-semibold);
-  letter-spacing: 0.06em;
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--color-sage);
 }
@@ -47,6 +42,7 @@
 .goal-celebration__dismiss {
   border: none;
   background: transparent;
+  min-height: var(--touch-min);
   padding: 0;
   font-family: inherit;
   font-size: var(--text-sm);
@@ -63,5 +59,11 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .goal-celebration {
+    animation: none;
   }
 }

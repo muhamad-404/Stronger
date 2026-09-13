@@ -19,6 +19,9 @@ export default function TaskRow({
         .join(' ')}
       onClick={onToggle}
       aria-pressed={completed}
+      aria-label={`${title}, ${timeLabel}. ${
+        completed ? 'Completed' : 'Not completed'
+      }. Activate to toggle.`}
     >
       <span className="task-row__icon" aria-hidden>
         {Icon ? <Icon size={20} strokeWidth={2} /> : null}

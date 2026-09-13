@@ -60,6 +60,7 @@
 .btn--secondary {
   background: var(--color-sage-soft);
   color: var(--color-text);
+  box-shadow: none;
 }
 
 .btn--secondary:hover:not(:disabled) {
@@ -69,6 +70,7 @@
 .btn--ghost {
   background: transparent;
   color: var(--color-accent-deep);
+  box-shadow: none;
 }
 
 .btn--ghost:hover:not(:disabled) {
